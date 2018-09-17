@@ -1,12 +1,13 @@
 import core.CoreApiImpl;
 import database.DatabaseImpl;
+import database.LinkedHashMapExample;
 import ui.ConsoleUiImpl;
 
-import java.util.LinkedHashMap;
+import java.io.IOException;
 import java.util.Map;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         DatabaseImpl database = new DatabaseImpl();
         CoreApiImpl coreApi = new CoreApiImpl();
         ConsoleUiImpl consoleUi = new ConsoleUiImpl();
@@ -14,7 +15,8 @@ public class Main {
         int shelterSize = 5;
 
 //      creating database
-        Map<String, String> animals = new LinkedHashMap<>();
+        LinkedHashMapExample linkedHashMapExample = new LinkedHashMapExample();
+        Map<String, String> output = linkedHashMapExample.loadHashMapFromInternalStorage("file.txt");
 
         boolean isRunning = true;
         while (isRunning) {
@@ -24,13 +26,15 @@ public class Main {
 
             int choice = Integer.parseInt(consoleUi.getInput());
             if (choice == 1) {
-                coreApi.addNewAnimal(animals, shelterSize);
+                coreApi.addNewAnimal(output, shelterSize);
+                linkedHashMapExample.saveHashMapToInternalStorage("file.txt", output);
             } else if (choice == 2) {
-                coreApi.deleteAnimal(animals);
+                coreApi.deleteAnimal(output);
+                linkedHashMapExample.saveHashMapToInternalStorage("file.txt", output);
             } else if (choice == 3) {
-                database.getStatusOfDatabase(animals, shelterSize);
+                database.getStatusOfDatabase(output, shelterSize);
             } else if (choice == 4) {
-                database.printAReport(animals);
+                database.printAReport(output);
             } else if (choice == 5) {
                 coreApi.exit();
                 isRunning = false;
